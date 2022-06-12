@@ -58,6 +58,6 @@ mlp = NeuralNetworkNLP( [ (1, len(vocabList)), (len(vocabList), 10), (10, 1) ], 
 
 #mlp.test(reviews[:-1000], labels[:-1000], helperFunction)
 
-mlp.train(reviews[:-1000], labels[:-1000], labelHelper, helperFunction, 0.01)
+mlp.train(reviews[:-1000], labels[:-1000], labelHelper, helperFunction, 0.1)
 
 #(1, 7000) (7000, 10) (10, 1)    (1, 10)

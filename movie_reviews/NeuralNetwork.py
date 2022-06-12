@@ -34,7 +34,7 @@ class NeuralNetworkNLP:
         
         # load it
         for element in input.split(" "):
-            self.InputVector[0][self.mapping[element]] += 1
+            self.InputVector[0][self.mapping[element]] = 1
             
     def sigmoid(self,x):
         return 1 / (1 + np.exp(-x))
