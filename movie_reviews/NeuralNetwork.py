@@ -24,7 +24,7 @@ class NeuralNetworkNLP:
         # hidden layers builder - random weights
         for i in range(1, len(self.layerDims)-1):
             self.hiddenLayers.append(
-                np.random.normal(0.0, 1.0, layerDims[i])
+                np.random.normal(0.0, layerDims[1][0]**-0.5, layerDims[i])
             )
     
     def load_input_layer(self, input):
@@ -94,23 +94,24 @@ class NeuralNetworkNLP:
             # - FORWARD PASS -
             self.load_input_layer(inputs[i])            
             
-            layer_1_input_hidden = self.InputVector.dot(self.hiddenLayers[0])
-            layer_2_hiddin_output = self.sigmoid(layer_1_input_hidden.dot(self.outputLayer))
+            inputLayerOutput = self.InputVector.dot(self.hiddenLayers[0])
+            finalOutput = self.sigmoid(inputLayerOutput.dot(self.outputLayer))
+            
+            # - BACKWARDS -
             
             # FIND ERROR
-            layer_2_error_hidden_output = layer_2_hiddin_output - outputHelperSI(outputs[i])
-            layer_2_error_delta = layer_2_error_hidden_output * self.sigmoid_derivative(layer_2_hiddin_output)
+            finalOutputError = finalOutput - outputHelperSI(outputs[i])
+            finalOutputDelta = finalOutputError * self.sigmoid_derivative(finalOutput)
             
-            # BACK PROPAGATION
-            layer_1_input_hidden_error = layer_2_error_delta.dot(self.outputLayer.T)
-            layer_1_error_delta = layer_1_input_hidden_error
+            inputLayerError = finalOutputDelta.dot(self.outputLayer.T)
+            inputLayerDelta = inputLayerError
             
             # update weights
-            self.outputLayer -= layer_1_input_hidden.T.dot(layer_2_error_delta) * learning_rate
-            self.hiddenLayers[0] -= self.InputVector.T.dot(layer_1_error_delta) * learning_rate
+            self.outputLayer -= inputLayerOutput.T.dot(finalOutputDelta) * learning_rate
+            self.hiddenLayers[0] -= self.InputVector.T.dot(inputLayerDelta) * learning_rate
             
 
-            if outputHelperIS(layer_2_hiddin_output) == outputs[i]:
+            if outputHelperIS(finalOutput) == outputs[i]:
                 correct += 1
                 
             # For debug purposes, print out our prediction accuracy and speed 
